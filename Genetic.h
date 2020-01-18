@@ -16,12 +16,16 @@ private:
 	int size; //rozmiar instancji
 
 public:
-	Genetic(int** loadedMatrix, double sizeOfMatrix); //konstruktor klasy
+	Genetic(int** loadedMatrix, int sizeOfMatrix); //konstruktor klasy
 	void randomPerm(vector<int>& wektor); //losowanie sciezki
-	vector<int> KrzyzowanieOx(vector<int> pierwszyWektor, vector<int> drugiWector); //krzyzowanie Ox
-	void mutation(vector<int>& wektor); //mutowanie osobnika
+	vector<int> krzyzowanieOx(vector<int> pierwszyWektor, vector<int> drugiWector); //krzyzowanie Ox
+	vector<int> krzyzowaniePmx(vector<int> pierwszyWektor, vector<int> drugiWector); //krzyzowanie Pmx
+	void inversionMutation(vector<int>& wektor); //mutowanie osobnika - invert
+	void scrambleMutation(vector<int>& wektor);
+	void swapMutation(vector<int>& wektor); //mutowanie osobnika - swap
+	void invert(int i, int j, vector<int>& wektor);
 	// g³ówny algorytm
-	vector<int>  GeneticAlg(int liczbaOsobnikow, int liczbaNajleoszychOsobników, float jakCzestoMutacja, bool testy);
+	vector<int>  geneticAlg(int liczbaOsobnikow, int liczbaNajleoszychOsobników, float jakCzestoMutacja, float jakCzestoKrzyzowanie, int mutation, bool testy);
 	void testy(); //testowanie
 	int road(vector<int>& wektor);
 	void showRoad(vector<int>& wektor);

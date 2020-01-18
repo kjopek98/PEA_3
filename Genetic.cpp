@@ -10,9 +10,9 @@
 
 using namespace std;
 
-Genetic::Genetic(int** loadedMatrix, double sizeOfMatrix) {
+Genetic::Genetic(int** loadedMatrix, int sizeOfMatrix) {
 
-	size = sizeOfMatrix; //romiar instancji
+	size = sizeOfMatrix; //rozmiar instancji
 	
 	matrixOfCost = new int* [size];
 	for (int i = 0; i < size; i++)
@@ -54,7 +54,7 @@ int Genetic::road(vector <int>& wektor)
 }
 
 //g³ówny algorytm
-vector<int> Genetic::GeneticAlg(int liczbaOsobnikow, int liczbaNajlepszychOsobników ,float jakCzestoMutacja, bool testy) {
+vector<int> Genetic::geneticAlg(int liczbaOsobnikow, int liczbaNajlepszychOsobników ,float jakCzestoMutacja, float jakCzestoKrzyzowanie, int mutation, bool testy) {
 
 	vector<int>* osobniki; 
 	osobniki = new vector<int>[liczbaOsobnikow];
@@ -64,12 +64,12 @@ vector<int> Genetic::GeneticAlg(int liczbaOsobnikow, int liczbaNajlepszychOsobni
 
 	// przygotowanie macierzy - pierwszy losowy zbior populacji
 	for (int i = 0; i < liczbaOsobnikow; i++) {
-		//
+		
 		osobniki[i].resize(size);
 		noweOsobniki[i].resize(size);
 		randomPerm(osobniki[i]);
 	}
-
+	// tworzymy strukturê pary, która wskazuje funckjê celu osobnika oraz jego indeks
 	pair <double, int>* rozwiazanie;
 	rozwiazanie = new pair <double, int>[liczbaOsobnikow];
 
@@ -90,6 +90,7 @@ vector<int> Genetic::GeneticAlg(int liczbaOsobnikow, int liczbaNajlepszychOsobni
 		if (ostatni > rozwiazanie[0].first) {
 			ostatni = rozwiazanie[0].first;
 			pokolenie = 5;
+			// przypisanie najlepszego osobnika o najni¿szym koszcie
 			najlepszyOsobnik = osobniki[rozwiazanie[0].second];
 		}
 		else {
@@ -99,15 +100,31 @@ vector<int> Genetic::GeneticAlg(int liczbaOsobnikow, int liczbaNajlepszychOsobni
 			cout << "Koszt: " << rozwiazanie[0].first << endl;
 		}*/
 
+		// krzy¿owanie i mutowanie osobników
 		for (int i = 0; i < liczbaOsobnikow; i++) {
-			noweOsobniki[i] = KrzyzowanieOx(osobniki[rozwiazanie[rand() % liczbaNajlepszychOsobników].second], osobniki[rozwiazanie[rand() % liczbaNajlepszychOsobników].second]);
+			// je¿eli prawdopodobieñstwo jest dobre, to nastepuje krzyzowanie
+			if (float(rand()) / RAND_MAX < jakCzestoKrzyzowanie) {
+				// wybranie dwóch najlepszych osobników do krzy¿owania
+				noweOsobniki[i] = krzyzowanieOx(osobniki[rozwiazanie[rand() % liczbaNajlepszychOsobników].second], osobniki[rozwiazanie[rand() % liczbaNajlepszychOsobników].second]);
+			}
+			else {
+				noweOsobniki[i] = osobniki[i];
+			}
 			// je¿eli prawdopodobieñstwo jest dobre, to nastepuje mutacja
 			if (float(rand()) / RAND_MAX < jakCzestoMutacja) {
-				mutation(noweOsobniki[i]);
+				if (mutation = 1) {
+					swapMutation(noweOsobniki[i]);
+				}
+				if (mutation == 2) {
+					inversionMutation(noweOsobniki[i]);
+				}
+				if (mutation == 3) {
+					scrambleMutation(noweOsobniki[i]);
+				}
 			}
 		}
 		vector <int>* temp = osobniki;
-		osobniki = noweOsobniki;
+		osobniki = noweOsobniki; //wrzucenie nowego pokolenia po zmianach genetycznych
 		noweOsobniki = temp;
 	}
 	if (testy == true) {
@@ -128,8 +145,8 @@ void Genetic::showRoad(vector<int>& wektor) {
 	cout << wektor[wektor.size() - 1]<< endl;
 }
 
-// mutowanie osobnika je¿eli zgodne z prawdopodobieñstwem
-void Genetic::mutation(vector<int>& wektor) {
+// mutowanie osobnika swap
+void Genetic::swapMutation(vector<int>& wektor) {
 	int x, y;
 	do {
 		x = rand() % size;
@@ -139,7 +156,58 @@ void Genetic::mutation(vector<int>& wektor) {
 	swap(wektor.at(x), wektor.at(y));
 }
 
-vector<int> Genetic::KrzyzowanieOx(vector<int> pierwszyWektor, vector<int> drugiWector) {
+//Funkcja pomocnicza do mutacji invert
+void Genetic::invert(int i, int j, vector<int>& wektor) {
+	int tempi;
+	for (; i < j; i++, j--) {
+		tempi = wektor[i];
+		wektor[i] = wektor[j];
+		wektor[j] = tempi;
+	}
+}
+void Genetic::inversionMutation(vector<int>& wektor) {
+	int i, j;
+	do {
+		i = rand() % size;
+		j = rand() % size;
+	} while (i == j);
+	if (i <= j) {
+		invert(i, j, wektor);
+	}
+	else {
+		invert(j, i, wektor);
+	}
+}
+
+void Genetic::scrambleMutation(vector<int>& wektor) {
+	vector<int> pozycje (wektor.size());
+	int l = pozycje.size();
+	//kopiowanie osobnika do mutacji
+	for (int i = 0; i < wektor.size(); i++) {
+		pozycje[i] = wektor[i];
+	}
+	for (int k = 0; k < 5; k++) {
+		int r1 = rand() % size;
+		int r2 = rand() % size;
+		//upewniamy siê, ¿e r1 jest wiêksze od r2
+		while(r1 >= r2){ r1 = rand() % size; r2 = rand() % size;}
+		//scrambling
+		for (int i = 0; i < 10; i++) {
+			int i1 = rand() % (r2 + 1 - r1 + 1) + r1;
+			int i2 = rand() % (r2 + 1 - r1 + 1) + r1;
+			int a = pozycje[i1];
+			pozycje[i1] = pozycje[i2];
+			pozycje[i2] = a;
+		}
+	}
+	//przepisywanie do osobnika zmutowanej wersji
+	for (int i = 0; i < wektor.size(); i++) {
+		wektor[i] = pozycje[i];
+	}
+}
+
+
+vector<int> Genetic::krzyzowanieOx(vector<int> pierwszyWektor, vector<int> drugiWector) {
 	int odkad = rand() % size;
 	int dokad = rand() % size;
 	vector<int> wynik(size);
@@ -150,7 +218,7 @@ vector<int> Genetic::KrzyzowanieOx(vector<int> pierwszyWektor, vector<int> drugi
 
 	for (int i = odkad; i != dokad; i = (i + 1) % size) {
 		wynik[i] = pierwszyWektor[i];
-		czyBylo[pierwszyWektor[i]] = 1;//ktore wzi¹lem z pierwszego wektora
+		czyBylo[pierwszyWektor[i]] = 1; // wpisuje, ktore geny wzi¹lem z pierwszego wektora
 	}
 	int gdzie = (dokad) % size;
 	for (int i = 0; i < size; i++) {
@@ -162,3 +230,23 @@ vector<int> Genetic::KrzyzowanieOx(vector<int> pierwszyWektor, vector<int> drugi
 	return wynik;
 }
 
+
+vector<int> Genetic::krzyzowaniePmx(vector<int> pierwszyWektor, vector<int> drugiWector) {
+	int odkad = rand() % size;
+	int dokad = rand() % size;
+	vector<int> wynik(size);
+	vector<int> czyBylo(size);
+
+	for (int i = odkad; i != dokad; i = (i + 1) % size) {
+		wynik[i] = pierwszyWektor[i];
+		//czyBylo[pierwszyWektor[i]] = 1;//ktore wzi¹lem z pierwszego wektora
+	}
+	int gdzie = (dokad) % size;
+	for (int i = 0; i < size; i++) {
+		if (czyBylo[drugiWector[(dokad + i) % size]] == 0) { //tam gdzie jest zero przepisuje wartosci z drugiego wektora
+			wynik[gdzie] = drugiWector[(dokad + i) % size];
+			gdzie = (gdzie + 1) % size;
+		}
+	}
+	return wynik;
+}

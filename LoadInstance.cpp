@@ -13,6 +13,7 @@ LoadInstance::LoadInstance()
     instance = "";
     number = 0;
     size = 0;
+    isRead = false;
 }
 
 
@@ -63,6 +64,7 @@ void LoadInstance::load()
             data >> costMatrix[i][j];
         }
     }
+    isRead = true;
     cout << endl;
     data.close();
 

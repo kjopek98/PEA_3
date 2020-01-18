@@ -1,2 +1,4 @@
-﻿  LoadInstance.cpp
+﻿  main.cpp
+C:\Users\Krzysiek\source\repos\Pea3Test\main.cpp(17,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Krzysiek\source\repos\Pea3Test\main.cpp(69,76): warning C4305: 'argument': truncation from 'double' to 'float'
   Pea3Test.vcxproj -> C:\Users\Krzysiek\source\repos\Pea3Test\Debug\Pea3Test.exe

@@ -23,12 +23,15 @@ int main()
 	
 	int osobnicy;
 	int ileNaj;
+	int mutationType;
 	
 	char choice;
-	cout << "Menu:" << endl;
-	cout << "1. Wczytaj instancje" << endl
+	cout << "Projektowanie Efektywnych Algorytmow - Etap 3" << endl
+		<< "Krzysztof Jopek 241406" << endl
+	    << "1. Wczytaj instancje" << endl
 		<< "2. Wyswietl instancje" << endl
 		<< "3. Algorytm genetyczny" << endl
+		<< "4. Algorytm mrowkowy" << endl
 		<< "0. Wyjscie" << endl;
 
 	do {
@@ -38,10 +41,9 @@ int main()
 		{
 		case '1':
 			load.load();
-			isRead = true;
 			break;
 		case '2':
-			if (!isRead) {
+			if (!load.isRead) {
 				cout << "Instancja nie zostala wczytana." << endl;
 			}
 			else {
@@ -49,7 +51,7 @@ int main()
 			}
 			break;
 		case '3':
-			if (!isRead) {
+			if (!load.isRead) {
 				cout << "Instancja nie zostala wczytana." << endl;
 			}
 			else {
@@ -57,12 +59,24 @@ int main()
 				cin >> osobnicy;
 				cout << "\nIlu najlepszych: " << endl;
 				cin >> ileNaj;
+				cout << "1. Mutacja swap" << endl
+					<< "2. Mutacja invert" << endl
+					<< "3. Mutacja scramble" << endl;
+				cin >> mutationType;
 				cout << "\n\nIlosc miast: " << load.size << endl;
 				Genetic genetic(load.costMatrix, load.size);
 				timer.start();
-				odp = genetic.GeneticAlg(osobnicy, ileNaj, 0.01, true);
-				cout << "Czas wykonania: " << timer.duration() << endl;
+				odp = genetic.geneticAlg(osobnicy, ileNaj, 0.1, 0.9, mutationType, true);
+				cout << "Czas wykonania: " << timer.duration() << " [ms]"<< endl;
 				genetic.showRoad(odp);
+			}
+			break;
+		case 4:
+			if (!load.isRead) {
+				cout << "Instancja nie zostala wczytana." << endl;
+			}
+			else {
+
 			}
 			break;
 		case '0':
