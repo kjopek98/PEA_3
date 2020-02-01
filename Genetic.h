@@ -14,8 +14,10 @@ class Genetic
 private:
 	int** matrixOfCost; // wskaünik na dynamiczna macierz zawierajaca macierz kosztow przejsc
 	int size; //rozmiar instancji
+	
 
 public:
+	int wynik; // wynik rozwiπzania
 	Genetic(int** loadedMatrix, int sizeOfMatrix); //konstruktor klasy
 	void randomPerm(vector<int>& wektor); //losowanie sciezki
 	vector<int> krzyzowanieOx(vector<int> pierwszyWektor, vector<int> drugiWector); //krzyzowanie Ox

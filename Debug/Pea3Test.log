@@ -1,4 +1,11 @@
-﻿  main.cpp
+﻿  Genetic.cpp
+C:\Users\Krzysiek\source\repos\Pea3Test\Genetic.cpp(48,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Krzysiek\source\repos\Pea3Test\Genetic.cpp(54,9): warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
+C:\Users\Krzysiek\source\repos\Pea3Test\Genetic.cpp(142,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Krzysiek\source\repos\Pea3Test\Genetic.cpp(186,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Krzysiek\source\repos\Pea3Test\Genetic.cpp(204,20): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
 C:\Users\Krzysiek\source\repos\Pea3Test\main.cpp(17,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Krzysiek\source\repos\Pea3Test\main.cpp(69,76): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Krzysiek\source\repos\Pea3Test\main.cpp(68,76): warning C4305: 'argument': truncation from 'double' to 'float'
+  Generating Code...
   Pea3Test.vcxproj -> C:\Users\Krzysiek\source\repos\Pea3Test\Debug\Pea3Test.exe

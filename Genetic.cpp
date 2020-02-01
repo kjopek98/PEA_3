@@ -50,6 +50,7 @@ int Genetic::road(vector <int>& wektor)
 		cost += matrixOfCost[wektor[i]][wektor[i + 1]]; //obliczanie kosztow przejsc miedzy wierzcholkami
 	}
 	cost += matrixOfCost[wektor[size - 1]][wektor[0]]; // doliczenie kosztu powrotu
+
 	return cost;
 }
 
@@ -73,32 +74,31 @@ vector<int> Genetic::geneticAlg(int liczbaOsobnikow, int liczbaNajlepszychOsobni
 	pair <double, int>* rozwiazanie;
 	rozwiazanie = new pair <double, int>[liczbaOsobnikow];
 
-	int pokolenie = 5;	//liczba pokolen po ktorych zakonczy sie algorytm
+	int pokolenie = 10;	//liczba pokolen po ktorych zakonczy sie algorytm
 	double ostatni = INT_MAX;
 
 	//g³ówna pêtla
 	while (pokolenie > 0) {
 
+		//przypisywanie kosztu i numeru danego osobnika
 		for (int i = 0; i < liczbaOsobnikow; i++) {
 			rozwiazanie[i].first = road(osobniki[i]);
 			rozwiazanie[i].second = i;
 		}
 
+		//sortowanie rosn¹ce
 		sort(rozwiazanie, rozwiazanie + liczbaOsobnikow);
 
 		// warunek stopu
 		if (ostatni > rozwiazanie[0].first) {
 			ostatni = rozwiazanie[0].first;
-			pokolenie = 5;
+			pokolenie = 10;
 			// przypisanie najlepszego osobnika o najni¿szym koszcie
 			najlepszyOsobnik = osobniki[rozwiazanie[0].second];
 		}
 		else {
 			pokolenie--;
 		}
-		/*if (testy == 0) {
-			cout << "Koszt: " << rozwiazanie[0].first << endl;
-		}*/
 
 		// krzy¿owanie i mutowanie osobników
 		for (int i = 0; i < liczbaOsobnikow; i++) {
@@ -127,8 +127,11 @@ vector<int> Genetic::geneticAlg(int liczbaOsobnikow, int liczbaNajlepszychOsobni
 		osobniki = noweOsobniki; //wrzucenie nowego pokolenia po zmianach genetycznych
 		noweOsobniki = temp;
 	}
-	if (testy == true) {
+	if (testy == false) {
 		cout << "Koszt: " << rozwiazanie[0].first << endl;
+	}
+	if (testy == true) {
+		wynik = rozwiazanie[0].first;
 	}
 	delete[] osobniki;
 	delete[] noweOsobniki;
@@ -218,7 +221,7 @@ vector<int> Genetic::krzyzowanieOx(vector<int> pierwszyWektor, vector<int> drugi
 
 	for (int i = odkad; i != dokad; i = (i + 1) % size) {
 		wynik[i] = pierwszyWektor[i];
-		czyBylo[pierwszyWektor[i]] = 1; // wpisuje, ktore geny wzi¹lem z pierwszego wektora
+		czyBylo[pierwszyWektor[i]] = 1; // wpisuje wartoœæ 1 w miejsce numerów genów, które wzi¹lem z pierwszego wektora
 	}
 	int gdzie = (dokad) % size;
 	for (int i = 0; i < size; i++) {
@@ -236,17 +239,5 @@ vector<int> Genetic::krzyzowaniePmx(vector<int> pierwszyWektor, vector<int> drug
 	int dokad = rand() % size;
 	vector<int> wynik(size);
 	vector<int> czyBylo(size);
-
-	for (int i = odkad; i != dokad; i = (i + 1) % size) {
-		wynik[i] = pierwszyWektor[i];
-		//czyBylo[pierwszyWektor[i]] = 1;//ktore wzi¹lem z pierwszego wektora
-	}
-	int gdzie = (dokad) % size;
-	for (int i = 0; i < size; i++) {
-		if (czyBylo[drugiWector[(dokad + i) % size]] == 0) { //tam gdzie jest zero przepisuje wartosci z drugiego wektora
-			wynik[gdzie] = drugiWector[(dokad + i) % size];
-			gdzie = (gdzie + 1) % size;
-		}
-	}
 	return wynik;
 }
